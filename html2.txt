@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro de Tempo</title>
+</head>
+<body>
+  <h2>Registro de Tempo</h2>
+  <form id="form">
+    <input type="text" name="nome" placeholder="Seu nome" required />
+    <button type="submit" name="acao" value="Iniciar">Iniciar</button>
+    <button type="submit" name="acao" value="Parar">Parar</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('form');
+    const scriptURL = https://script.google.com/macros/s/AKfycbzS_OdQnMklh12NXrv1gTkr0JT9tqf3MV1ftpglCOwTYNmCP1SvnYVAyGDshxKClyZa/exec
+;
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        .then(() => alert('Registro enviado com sucesso!'))
+        .catch(() => alert('Erro ao enviar o registro.'));
+    });
+  </script>
+</body>
+</html>
