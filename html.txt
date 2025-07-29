@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registro de Ponto</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      padding: 40px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Registro de Entrada/Saída</h2>
+  <form id="form">
+    <input type="text" id="nome" placeholder="Digite seu nome" required />
+    <br />
+    <button type="submit">Registrar</button>
+  </form>
+  <p id="mensagem"></p>
+
+  <script>
+    const form = document.getElementById('form');
+    const mensagem = document.getElementById('mensagem');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const nome = document.getElementById('nome').value;
+
+      fetch(https://script.google.com/macros/s/AKfycbxrAh3Q1Sk8nYdPsfa9zeSnUPDXSeggVBInDKEq2iIuFm_CHj9nNQ8yRJaQHVP7FG6i/exec, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `nome=${encodeURIComponent(nome)}`
+      })
+      .then(response => response.text())
+      .then(texto => {
+        mensagem.textContent = texto;
+        form.reset();
+      })
+      .catch(err => {
+        mensagem.textContent = "Erro ao registrar.";
+      });
+    });
+  </script>
+</body>
+</html>
