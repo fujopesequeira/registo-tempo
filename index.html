@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Registro de Horário</title>
+  <title>Login e Registro de Tempo</title>
 </head>
 <body>
   <h2>Login</h2>
@@ -13,10 +13,13 @@
 
   <script>
     const form = document.getElementById('form');
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbw_Hok00VxNxn-kwdOB8KEO2Vz8xD24Xd8p20YZ63H7XasAhDZxQVqCdKG6M_ilwgDlew/exec
+
+    // Cole aqui o link do seu Web App do Google Apps Script
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbx_qsbyVYDFpHUuSifA3mgHPFwLkDsF50CBYVv6l034feM1zWVyPPcwL3ufE5e6npZ0NA/exec';
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
       const nome = form.nome.value.trim();
       if (!nome) {
         alert('Digite seu nome.');
@@ -52,4 +55,13 @@
           alert(`Registro "${acao}" enviado com sucesso.`);
           form.reset();
         } else {
-          alert('Erro ao env
+          alert('Erro ao enviar: resposta do servidor inválida.');
+        }
+      } catch (err) {
+        alert('Erro ao enviar o registro: Failed to fetch');
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
