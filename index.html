@@ -2,26 +2,63 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Registro de Tempo</title>
+  <title>Login e Registro de Tempo</title>
 </head>
 <body>
-  <h2>Registro de Tempo</h2>
+  <h2>Login</h2>
   <form id="form">
-    <input type="text" name="nome" placeholder="Seu nome" required />
-    <button type="submit" name="acao" value="Iniciar">Iniciar</button>
-    <button type="submit" name="acao" value="Parar">Parar</button>
+    <input type="text" name="nome" placeholder="Digite seu nome" required />
+    <button type="submit">Enviar</button>
   </form>
 
   <script>
     const form = document.getElementById('form');
-    const scriptURL = https://script.google.com/macros/s/AKfycbzS_OdQnMklh12NXrv1gTkr0JT9tqf3MV1ftpglCOwTYNmCP1SvnYVAyGDshxKClyZa/exec
-;
+    const scriptURL = 'COLE_AQUI_O_LINK_DO_SEU_WEB_APP';
 
     form.addEventListener('submit', e => {
       e.preventDefault();
-      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-        .then(() => alert('Registro enviado com sucesso!'))
-        .catch(() => alert('Erro ao enviar o registro.'));
+      const nome = form.nome.value.trim();
+      if (!nome) {
+        alert('Digite seu nome.');
+        return;
+      }
+
+      const agora = new Date().toISOString();
+      // Guardar registro localmente para saber se iniciou/parou
+      const registro = JSON.parse(localStorage.getItem('registro_' + nome)) || {};
+
+      let acao;
+      let mensagem;
+
+      if (!registro.inicio) {
+        acao = 'Iniciar';
+        registro.inicio = agora;
+        mensagem = 'Registro iniciado às ' + agora;
+      } else if (!registro.fim) {
+        acao = 'Parar';
+        registro.fim = agora;
+        mensagem = 'Registro finalizado às ' + agora;
+      } else {
+        alert('Você já finalizou o registro.');
+        return;
+      }
+
+      localStorage.setItem('registro_' + nome, JSON.stringify(registro));
+
+      fetch(scriptURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, acao, timestamp: agora })
+      })
+      .then(response => {
+        if (response.ok) {
+          alert(mensagem);
+          form.reset();
+        } else {
+          alert('Erro ao enviar o registro.');
+        }
+      })
+      .catch(() => alert('Erro ao enviar o registro.'));
     });
   </script>
 </body>
