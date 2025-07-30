@@ -13,7 +13,7 @@
 
   <script>
     const form = document.getElementById('form');
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwF1t91fW-XsymALuOHP0Q2U4BcTvPhlgVSc4VfemvY9IeeQ2KP_AVcGhfwu56ksCt-Dw/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbw_Hok00VxNxn-kwdOB8KEO2Vz8xD24Xd8p20YZ63H7XasAhDZxQVqCdKG6M_ilwgDlew/exec
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -35,7 +35,7 @@
         acao = 'Parar';
         registro.fim = agora;
       } else {
-        alert('Você já iniciou e finalizou.');
+        alert('Você já finalizou.');
         return;
       }
 
@@ -52,13 +52,4 @@
           alert(`Registro "${acao}" enviado com sucesso.`);
           form.reset();
         } else {
-          alert('Erro ao enviar o registro: resposta do servidor inválida.');
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Erro ao enviar o registro: Failed to fetch');
-      }
-    });
-  </script>
-</body>
-</html>
+          alert('Erro ao env
