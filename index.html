@@ -1,84 +1,64 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Registro de Tempo</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 40px;
-      max-width: 400px;
-      margin: auto;
-    }
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      font-size: 16px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <title>Registro de Horário</title>
 </head>
 <body>
-
-  <h2>Login e Registro de Tempo</h2>
+  <h2>Login</h2>
   <form id="form">
     <input type="text" name="nome" placeholder="Digite seu nome" required />
     <button type="submit">Enviar</button>
   </form>
 
   <script>
-    const form = document.getElementById("form");
+    const form = document.getElementById('form');
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwF1t91fW-XsymALuOHP0Q2U4BcTvPhlgVSc4VfemvY9IeeQ2KP_AVcGhfwu56ksCt-Dw/exec';
 
-    // 🔁 Cole abaixo o link do seu Web App do Google Apps Script
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyfOjNJ45EU0qdYXFgOPvAWmP723_xTQg79Pja8dBk3PPuV2q9hyewsGNovr2fJAZ5aUw/exec";
-
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-
       const nome = form.nome.value.trim();
-      if (!nome) return alert("Digite seu nome!");
-
-      const agora = new Date().toISOString();
-      const registroKey = "registro_" + nome;
-      let registro = JSON.parse(localStorage.getItem(registroKey)) || {};
-      let acao;
-      let mensagem;
-
-      if (!registro.inicio) {
-        acao = "Iniciar";
-        registro.inicio = agora;
-        mensagem = `Registro iniciado às ${agora}`;
-      } else if (!registro.fim) {
-        acao = "Parar";
-        registro.fim = agora;
-        mensagem = `Registro finalizado às ${agora}`;
-      } else {
-        return alert("Você já finalizou o registro.");
+      if (!nome) {
+        alert('Digite seu nome.');
+        return;
       }
 
-      localStorage.setItem(registroKey, JSON.stringify(registro));
+      const agora = new Date().toISOString();
+      const chave = 'registro_' + nome;
+      let registro = JSON.parse(localStorage.getItem(chave)) || {};
+
+      let acao;
+      if (!registro.inicio) {
+        acao = 'Iniciar';
+        registro.inicio = agora;
+      } else if (!registro.fim) {
+        acao = 'Parar';
+        registro.fim = agora;
+      } else {
+        alert('Você já iniciou e finalizou.');
+        return;
+      }
+
+      localStorage.setItem(chave, JSON.stringify(registro));
 
       try {
-        const res = await fetch(scriptURL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const resposta = await fetch(scriptURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ nome, acao, timestamp: agora })
         });
 
-        const text = await res.text();
-
-        if (res.ok && text === "ok") {
-          alert(mensagem);
+        if (resposta.ok) {
+          alert(`Registro "${acao}" enviado com sucesso.`);
           form.reset();
         } else {
-          throw new Error(text);
+          alert('Erro ao enviar o registro: resposta do servidor inválida.');
         }
-
       } catch (err) {
-        alert("Erro ao enviar o registro: " + err.message);
+        console.error(err);
+        alert('Erro ao enviar o registro: Failed to fetch');
       }
     });
   </script>
-
 </body>
 </html>
