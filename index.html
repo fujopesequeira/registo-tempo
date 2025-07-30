@@ -5,7 +5,7 @@
   <title>Login e Registro de Tempo</title>
 </head>
 <body>
-  <h2>Login</h2>
+  <h2>Login e Registro de Tempo</h2>
   <form id="form">
     <input type="text" name="nome" placeholder="Digite seu nome" required />
     <button type="submit">Enviar</button>
@@ -13,9 +13,7 @@
 
   <script>
     const form = document.getElementById('form');
-
-    // Cole aqui o link do seu Web App do Google Apps Script
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbx_qsbyVYDFpHUuSifA3mgHPFwLkDsF50CBYVv6l034feM1zWVyPPcwL3ufE5e6npZ0NA/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwyvyqj8kmwyKRr0pKvDMoLU5NQY3PN6FoNbiT7v0o7kjzwcKPJbf0UfgEFUjq7I1vQtw/exec';
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -38,28 +36,28 @@
         acao = 'Parar';
         registro.fim = agora;
       } else {
-        alert('Você já finalizou.');
+        alert('Você já finalizou o registro.');
         return;
       }
 
       localStorage.setItem(chave, JSON.stringify(registro));
 
       try {
-        const resposta = await fetch(scriptURL, {
+        const response = await fetch(scriptURL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nome, acao, timestamp: agora })
+          body: JSON.stringify({ nome, acao, timestamp: agora }),
+          mode: 'cors'
         });
 
-        if (resposta.ok) {
-          alert(`Registro "${acao}" enviado com sucesso.`);
+        if (response.ok) {
+          alert(`Registro "${acao}" enviado com sucesso!`);
           form.reset();
         } else {
-          alert('Erro ao enviar: resposta do servidor inválida.');
+          alert('Erro ao enviar registro.');
         }
-      } catch (err) {
-        alert('Erro ao enviar o registro: Failed to fetch');
-        console.error(err);
+      } catch (error) {
+        alert('Erro ao enviar o registro: ' + error.message);
       }
     });
   </script>
