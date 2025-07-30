@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Login e Registro</title>
+</head>
+<body>
+  <h2>Registo de Tempo</h2>
+  <form id="form">
+    <input type="text" name="nome" placeholder="Digite o seu nome" required />
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    const form = document.getElementById("form");
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwA4wg_SHr8AF25Rzxyffsde5Umd8nr55LrbTO_Cw4WrtP9Yp65xYlXLq5U5Xx04d5lxg/exec";
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nome = form.nome.value.trim();
+      if (!nome) return alert("Digite seu nome!");
+
+      const agora = new Date().toISOString();
+      let acao;
+      let registro = JSON.parse(localStorage.getItem("registro_" + nome)) || {};
+
+      if (!registro.inicio) {
+        acao = "Iniciar";
+        registro.inicio = agora;
+      } else if (!registro.fim) {
+        acao = "Parar";
+        registro.fim = agora;
+      } else {
+        return alert("Já finalizou o registro.");
+      }
+
+      localStorage.setItem("registro_" + nome, JSON.stringify(registro));
+
+      try {
+        const res = await fetch(scriptURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nome, acao, timestamp: agora })
+        });
+
+        const text = await res.text();
+        if (res.ok && text === "ok") {
+          alert(`Registro "${acao}" enviado com sucesso.`);
+          form.reset();
+        } else {
+          throw new Error(text);
+        }
+      } catch (err) {
+        alert("Erro ao enviar o registro: " + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
