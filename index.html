@@ -1,40 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Login e Registro</title>
+  <meta charset="UTF-8">
+  <title>Registro de Tempo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      max-width: 400px;
+      margin: auto;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
-  <h2>Registo de Tempo</h2>
+
+  <h2>Login e Registro de Tempo</h2>
   <form id="form">
-    <input type="text" name="nome" placeholder="Digite o seu nome" required />
+    <input type="text" name="nome" placeholder="Digite seu nome" required />
     <button type="submit">Enviar</button>
   </form>
 
   <script>
     const form = document.getElementById("form");
+
+    // 🔁 Cole abaixo o link do seu Web App do Google Apps Script
     const scriptURL = "https://script.google.com/macros/s/AKfycbwA4wg_SHr8AF25Rzxyffsde5Umd8nr55LrbTO_Cw4WrtP9Yp65xYlXLq5U5Xx04d5lxg/exec";
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
       const nome = form.nome.value.trim();
       if (!nome) return alert("Digite seu nome!");
 
       const agora = new Date().toISOString();
+      const registroKey = "registro_" + nome;
+      let registro = JSON.parse(localStorage.getItem(registroKey)) || {};
       let acao;
-      let registro = JSON.parse(localStorage.getItem("registro_" + nome)) || {};
+      let mensagem;
 
       if (!registro.inicio) {
         acao = "Iniciar";
         registro.inicio = agora;
+        mensagem = `Registro iniciado às ${agora}`;
       } else if (!registro.fim) {
         acao = "Parar";
         registro.fim = agora;
+        mensagem = `Registro finalizado às ${agora}`;
       } else {
-        return alert("Já finalizou o registro.");
+        return alert("Você já finalizou o registro.");
       }
 
-      localStorage.setItem("registro_" + nome, JSON.stringify(registro));
+      localStorage.setItem(registroKey, JSON.stringify(registro));
 
       try {
         const res = await fetch(scriptURL, {
@@ -44,16 +66,19 @@
         });
 
         const text = await res.text();
+
         if (res.ok && text === "ok") {
-          alert(`Registro "${acao}" enviado com sucesso.`);
+          alert(mensagem);
           form.reset();
         } else {
           throw new Error(text);
         }
+
       } catch (err) {
         alert("Erro ao enviar o registro: " + err.message);
       }
     });
   </script>
+
 </body>
 </html>
